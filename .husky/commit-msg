@@ -1,0 +1,17 @@
+#!/bin/sh
+
+commit_message=$(cat "$1")
+
+pattern='^(feat|fix|refactor|test|docs|chore|style|perf|build|ci)(\([a-zA-Z0-9_-]+\))?: .+'
+
+if ! echo "$commit_message" | grep -Eq "$pattern"; then
+    echo "❌ Invalid commit message."
+    echo ""
+    echo "Use Conventional Commits:"
+    echo "  feat: add login page"
+    echo "  fix(auth): handle expired session"
+    echo "  refactor(chat): extract message service"
+    exit 1
+fi
+
+exit 0

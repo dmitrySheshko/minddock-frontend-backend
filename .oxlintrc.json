@@ -1,0 +1,46 @@
+{
+    "$schema": "/node_modules/oxlint/configuration_schema.json",
+    "plugins": [
+        "typescript",
+        "react",
+        "react-perf",
+        "jsx-a11y",
+        "import",
+        "unicorn",
+        "nextjs"
+    ],
+    "env": {
+        "browser": true,
+        "node": true,
+        "es6": true
+    },
+    "rules": {
+        "react/rules-of-hooks": "error",
+        "react/only-export-components": [
+            "warn",
+            {
+                "allowConstantExport": true,
+                "allowExportNames": [
+                    "generateMetadata",
+                    "generateStaticParams",
+                    "metadata",
+                    "viewport"
+                ]
+            }
+        ],
+        "no-debugger": "error",
+        "no-console": "warn",
+        "typescript/no-explicit-any": "warn",
+        "react/jsx-key": "error",
+        "react/no-array-index-key": "warn",
+        "jsx-a11y/alt-text": "error",
+        "unicorn/no-array-for-each": "off"
+    },
+    "ignorePatterns": [
+        ".next/**",
+        "node_modules/**",
+        "coverage/**",
+        "playwright-report/**",
+        "test-results/**"
+    ]
+}

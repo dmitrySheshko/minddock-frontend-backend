@@ -1,0 +1,1 @@
+ALTER TABLE "message_sources" ADD COLUMN "page_number" integer;
