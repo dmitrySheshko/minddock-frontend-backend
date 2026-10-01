@@ -273,9 +273,53 @@ docker compose up -d
 
 The project expects a PostgreSQL database with `pgvector` enabled.
 
-### 5. Install the Ollama models
+### 5. Set up Ollama and download the AI models
 
-Make sure Ollama is installed and running locally.
+By default, MindDock runs Ollama in a Docker container. You do not need to install Ollama separately to get the project running.
+
+The Ollama service is already included in `docker-compose.yml` and exposes the API at:
+
+```text
+http://127.0.0.1:11434
+```
+
+Check that the Ollama container is running:
+
+```bash
+docker compose ps
+```
+
+The project currently uses three Ollama models:
+
+- `qwen3:4b` — main chat model
+- `qwen3:4b-instruct` — lightweight utility tasks such as chat title generation
+- `embeddinggemma` — document and query embeddings used by the RAG pipeline
+
+Download the models inside the Ollama container:
+
+```bash
+docker compose exec ollama ollama pull qwen3:4b
+docker compose exec ollama ollama pull qwen3:4b-instruct
+docker compose exec ollama ollama pull embeddinggemma
+```
+
+You can check the installed models with:
+
+```bash
+docker compose exec ollama ollama list
+```
+
+The downloaded models are stored in the Docker volume, so they are preserved when the container is stopped or recreated.
+
+#### Performance note
+
+Running Ollama in Docker is the easiest way to start MindDock because it keeps the whole local infrastructure reproducible and requires less manual setup.
+
+However, Ollama running inside Docker can be noticeably slower, especially on macOS, where a Docker container may not have access to the same native hardware acceleration available to Ollama running directly on the host.
+
+If AI responses or embedding generation are too slow, you can install Ollama directly on your machine instead.
+
+After installing Ollama locally, download the same models:
 
 ```bash
 ollama pull qwen3:4b
@@ -283,16 +327,49 @@ ollama pull qwen3:4b-instruct
 ollama pull embeddinggemma
 ```
 
-Check installed models:
+Check that they are available:
 
 ```bash
 ollama list
 ```
 
-By default Ollama is expected at:
+Ollama should then be available at:
 
 ```text
 http://127.0.0.1:11434
+```
+
+If you use the local Ollama installation, stop the Docker Ollama service first to avoid a port conflict:
+
+```bash
+docker compose stop ollama
+```
+
+Then start the local Ollama server if it is not already running:
+
+```bash
+ollama serve
+```
+
+No application configuration changes are required as long as MindDock uses:
+
+```env
+OLLAMA_BASE_URL=http://127.0.0.1:11434
+```
+
+You can therefore choose between:
+
+```text
+Docker Ollama
+    → easiest setup
+    → reproducible environment
+    → models stored in a Docker volume
+    → may be slower on macOS
+
+Local Ollama
+    → requires Ollama to be installed separately
+    → usually better performance on macOS
+    → recommended if local inference in Docker is too slow
 ```
 
 ### 6. Run database migrations
