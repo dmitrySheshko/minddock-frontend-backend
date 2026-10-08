@@ -4,8 +4,11 @@
   "private": true,
   "scripts": {
     "prepare": "husky",
+    "predev": "node scripts/check-startup.mjs development",
     "dev": "next dev",
+    "prebuild": "node scripts/check-startup.mjs production --config-only",
     "build": "next build",
+    "prestart": "node scripts/check-startup.mjs production",
     "start": "next start",
     "lint": "oxlint .",
     "typecheck": "tsc --noEmit -p tsconfig.typecheck.json",
@@ -14,7 +17,7 @@
     "test:e2e": "playwright test",
     "test:report": "npx playwright show-report",
     "check": "npm run lint && npm run typecheck && npm run test",
-    "ci": "npm run check && npm run build && npm run test:e2e",
+    "ci:check": "npm run check && npm run build && npm run test:e2e",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio"
@@ -22,6 +25,7 @@
   "dependencies": {
     "@better-auth/drizzle-adapter": "^1.7.2",
     "@better-auth/expo": "^1.7.5",
+    "@next/env": "^16.4.0",
     "better-auth": "^1.7.2",
     "dotenv": "^17.4.2",
     "drizzle-orm": "^0.45.2",

@@ -73,10 +73,8 @@ jobs:
             ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-
       - name: Install dependencies
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
-      - name: Run CI
-        run: npm run ci
-      - name: Run Build
-        run: npm run build
+      - name: Run CI check
+        run: npm run ci:check
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

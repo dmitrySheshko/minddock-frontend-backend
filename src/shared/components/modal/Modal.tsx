@@ -1,6 +1,6 @@
 'use client'
 
-import {FC, useEffect, useRef} from "react";
+import {FC, useEffect, useRef, useState} from "react";
 import {createPortal} from "react-dom";
 import { X } from "lucide-react";
 import {ModalProps} from "./Modal.types";
@@ -10,20 +10,35 @@ const Modal: FC<ModalProps> = ({
     children,
     hideModal,
 }) => {
+    const [portalElement, setPortalElement] = useState<HTMLElement | null>(null);
     const dialogRef = useRef<HTMLDialogElement>(null);
     const route = useLocalizedRouter();
     const hideModalHandler = hideModal ? hideModal : () => route.back();
 
     useEffect(() => {
-        const dialog = dialogRef.current;
-        if (!dialog) {
+        if (!portalElement) {
             return;
         }
-        dialog.showModal();
+        const dialog = dialogRef.current;
+        if (dialog && !dialog.open) {
+            dialog.showModal();
+        }
+
         return () => {
-            dialog.close();
+            if (dialog?.open) {
+                dialog.close();
+            }
         };
+    }, [portalElement]);
+    useEffect(() => {
+        setPortalElement(
+            document.getElementById('app-modal'),
+        );
     }, []);
+
+    if (!portalElement) {
+        return null;
+    }
 
     return createPortal(
         <dialog
@@ -52,6 +67,6 @@ const Modal: FC<ModalProps> = ({
                 </button>
             </div>
         </dialog>,
-        document.getElementById('app-modal')!);
+        portalElement);
 };
 export default Modal;
